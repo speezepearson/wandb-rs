@@ -4,10 +4,8 @@ use graphql_client::{GraphQLQuery, Response};
 
 mod graphql;
 
-pub type EntityGQLId = String;
 pub type EntityName = String;
 pub enum EntityKey {
-    Id(EntityGQLId),
     Name(EntityName),
 }
 pub struct Entity;
@@ -73,7 +71,6 @@ impl Api {
 
     pub async fn entity(&self, key: &EntityKey) -> Entity {
         match key {
-            EntityKey::Id(..) => unimplemented!(),
             EntityKey::Name(..) => unimplemented!(),
         }
     }
