@@ -14,11 +14,60 @@ pub type ProjectName = String;
 pub enum ProjectKey {
     Name(EntityName, ProjectName),
 }
+impl ProjectKey {
+    pub fn from_name(entity_name: impl Into<EntityName>, project_name: impl Into<ProjectName>) -> Self {
+        Self::Name(entity_name.into(), project_name.into())
+    }
+}
+#[derive(Debug)]
+pub enum ProjectKeyParseErr {
+    InvalidFormat,
+}
+impl std::str::FromStr for ProjectKey {
+    type Err = ProjectKeyParseErr;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        regex::Regex::new(r"^(?P<entity_name>[\w.-]+)/(?P<project_name>[\w.-]+)$")
+            .unwrap()
+            .captures(s)
+            .ok_or(ProjectKeyParseErr::InvalidFormat)
+            .map(|captures| Self::Name(
+                captures.name("entity_name").unwrap().as_str().to_owned(),
+                captures.name("project_name").unwrap().as_str().to_owned(),
+            ))
+    }
+}
 pub struct Project;
 
 pub type RunName = String;
 pub enum RunKey {
-    Name(EntityName, ProjectName, RunName),
+    Name(ProjectKey, RunName),
+}
+impl RunKey {
+    pub fn from_name(entity_name: impl Into<EntityName>, project_key: impl Into<ProjectName>, run_name: impl Into<RunName>) -> Self {
+        Self::Name(ProjectKey::from_name(entity_name, project_key), run_name.into())
+    }
+}
+#[derive(Debug)]
+pub enum RunKeyParseErr {
+    InvalidFormat,
+}
+impl std::str::FromStr for RunKey {
+    type Err = RunKeyParseErr;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        regex::Regex::new(r"^(?P<entity_name>[\w.-]+)/(?P<project_name>[\w.-]+)/(?P<run_name>[\w.-]+)$")
+            .unwrap()
+            .captures(s)
+            .ok_or(RunKeyParseErr::InvalidFormat)
+            .map(|captures| Self::Name(
+                ProjectKey::Name(
+                    captures.name("entity_name").unwrap().as_str().to_owned(),
+                    captures.name("project_name").unwrap().as_str().to_owned(),
+                ),
+                captures.name("run_name").unwrap().as_str().to_owned(),
+            ))
+    }
 }
 pub struct Run;
 
@@ -116,7 +165,7 @@ mod tests {
         });
 
         // Send an HTTP request to the mock server. This simulates your code.
-        let response = Api::new(url).project(&ProjectKey::Name("foo".into(), "bar".into())).await.unwrap();
+        let response = Api::new(url).project(&ProjectKey::from_name("foo", "bar")).await.unwrap();
 
         // Ensure the specified mock was called exactly one time (or fail with a detailed error description).
         hello_mock.assert();

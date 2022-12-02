@@ -1,16 +1,15 @@
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = std::env::args().collect();
-    if args.len() != 3 {
-        eprintln!("Usage: {} <entity> <project>", args[0]);
-        eprintln!(" e.g.: {} wandb huggingtweets", args[0]);
+    if args.len() != 2 {
+        eprintln!("Usage: {} <entity>/<project>", args[0]);
+        eprintln!(" e.g.: {} wandb/huggingtweets", args[0]);
         std::process::exit(1);
     }
-    let entity_name = &args[1];
-    let project_name = &args[2];
+    let key = args[1].parse::<wandb::ProjectKey>().unwrap();
 
     let api = wandb::Api::default();
-    let project = api.project(&wandb::ProjectKey::Name(entity_name.into(), project_name.into())).await.unwrap().project;
+    let project = api.project(&key).await.unwrap().project;
 
     match project {
         Some(project) => {

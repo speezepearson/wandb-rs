@@ -3,7 +3,7 @@
 Print a project's GraphQL id:
 ```
 $ cd examples/get-project
-$ cargo run -- wandb huggingtweets
+$ cargo run -- wandb/huggingtweets
 <...snip...>
 Project id: UHJvamVjdDp2MTpodWdnaW5ndHdlZXRzOndhbmRi
 ```
