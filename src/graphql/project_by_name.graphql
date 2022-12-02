@@ -1,0 +1,6 @@
+query ProjectByName($entityName: String!, $projectName: String!) {
+    project(entityName: $entityName, name: $projectName) {
+        id
+        name
+    }
+}
