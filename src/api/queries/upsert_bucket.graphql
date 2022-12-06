@@ -1,0 +1,23 @@
+mutation UpsertBucket(
+    $entity: String,
+    $project: String,
+) {
+    upsertBucket(input: {
+        entity: $entity,
+        project: $project,
+    }) {
+        inserted
+        bucket {
+            id
+            name
+            project {
+                id
+                name
+                entity {
+                    id
+                    name
+                }
+            }
+        }
+    }
+}
