@@ -1,3 +1,9 @@
+# Milestones
+
+- [ ] can log data to a run and have it appear in the UI (see [examples/milestones/run_log/](examples/milestones/run_log/))
+- [ ] can log files in an artifact (see [examples/milestones/basic_artifacts/](examples/milestones/basic_artifacts/))
+- [ ] most work is done by a background process for resource isolation
+
 # Examples
 
 Print a project's GraphQL id:
